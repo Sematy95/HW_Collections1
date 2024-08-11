@@ -2,6 +2,8 @@ package pro.sky.skyprospringdemo.service;
 
 import pro.sky.skyprospringdemo.domain.Employee;
 
+import java.util.Collection;
+
 
 public interface EmployeeService {
     void addEmployee(Employee employee);
@@ -10,5 +12,5 @@ public interface EmployeeService {
 
     void deleteEmployee(String firstName, String lastName);
 
-    String showAllEmployees();
+    Collection<Employee> showAll();
 }

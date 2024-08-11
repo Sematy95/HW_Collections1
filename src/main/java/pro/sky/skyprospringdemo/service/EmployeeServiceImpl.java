@@ -7,6 +7,8 @@ import pro.sky.skyprospringdemo.exceptions.EmployeeNotFoundException;
 import pro.sky.skyprospringdemo.exceptions.EmployeeStorageIsFullException;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -63,11 +65,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public String showAllEmployees() {
-        String list = "Список сотрудников: ";
-        for (Employee employee : employees) {
-            list += (" ["+employee+"]+ "+"\n");
-        }
-        return list;
+    public Collection<Employee> showAll() {
+        return Collections.unmodifiableList(employees);
     }
+
 }
