@@ -31,12 +31,16 @@ public class Employee {
                         ", id сотрудника: " + id;
     }
 
-    public String getFirstNameName() {
+    public String getFirstName() {
         return firstName;
     }
 
-    public String getLastNameName() {
+    public String getLastName() {
         return lastName;
+    }
+
+    public String getFullName() {
+        return firstName + lastName;
     }
 
     public int getDepartment() {

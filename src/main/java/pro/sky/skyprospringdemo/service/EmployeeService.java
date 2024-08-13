@@ -8,7 +8,7 @@ import java.util.Collection;
 public interface EmployeeService {
     void addEmployee(Employee employee);
 
-    String findEmployee(String firstName, String lastName);
+    Employee findEmployee(String firstName, String lastName);
 
     void deleteEmployee(String firstName, String lastName);
 
