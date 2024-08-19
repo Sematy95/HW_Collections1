@@ -3,6 +3,7 @@ package pro.sky.skyprospringdemo.service;
 import pro.sky.skyprospringdemo.domain.Employee;
 
 import java.util.Collection;
+import java.util.Optional;
 
 
 public interface EmployeeService {
@@ -13,4 +14,12 @@ public interface EmployeeService {
     void deleteEmployee(String firstName, String lastName);
 
     Collection<Employee> showAll();
+
+    Optional<Employee> findMinSalaryEmpDep(int department);
+
+    Optional<Employee> findMaxSalaryEmpDep(int department);
+
+    Collection<Employee> showAllEmployeeDep(int department);
+
+    Collection<Employee> showAllEmployeeAllDep();
 }

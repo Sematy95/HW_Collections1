@@ -61,4 +61,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         return Collections.unmodifiableCollection(employees.values());
     }
 
+    @Override
+    public Optional<Employee> findMinSalaryEmpDep(int department) {
+        return employees.values().stream()
+                .filter(d -> d.getDepartment() == department)
+                .min(Comparator.comparingInt(Employee::getSalary));
+    }
+    @Override
+    public Optional<Employee> findMaxSalaryEmpDep(int department) {
+        return employees.values().stream()
+                .filter(d -> d.getDepartment() == department)
+                .max(Comparator.comparingInt(Employee::getSalary));
+    }
+    @Override
+    public Collection<Employee> showAllEmployeeDep(int department) {
+        return employees.values().stream()
+                .filter(d -> d.getDepartment() == department).toList();
+    }
+    @Override
+    public Collection<Employee> showAllEmployeeAllDep() {
+        return employees.values().stream().toList();
+        //Возвращать всех сотрудников с разделением по отделам - не понятно, как должно быть реализовано - отсортировано по отделам или выводить список отделов с сотрудниками?
+    }
 }
+

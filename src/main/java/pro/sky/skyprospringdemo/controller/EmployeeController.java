@@ -8,6 +8,7 @@ import pro.sky.skyprospringdemo.domain.Employee;
 import pro.sky.skyprospringdemo.service.EmployeeService;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/employee")
@@ -56,26 +57,26 @@ public class EmployeeController {
     }
 
     @GetMapping(path = "/departments/max-salary")
-    public Employee findEmployeeMaxSalaryDepartment(@RequestParam("departmentId") int id) {
-        return null;
-        //todo
+    public Optional<Employee> findEmployeeMaxSalaryDepartment(@RequestParam("department") int department) {
+        return employeeService.findMaxSalaryEmpDep(department);
     }
+
     @GetMapping(path = "/departments/min-salary")
-    public Employee findEmployeeMinSalaryDepartment(@RequestParam("departmentId") int id) {
-        return null;
-        //todo
+    public Optional<Employee> findEmployeeMinSalaryDepartment(@RequestParam("department") int department) {
+        return employeeService.findMinSalaryEmpDep(department);
+
     }
+
     @GetMapping(path = "/departments/all")
-    public Employee showAllEmployeesInDepartment(@RequestParam("departmentId") int id) {
-        return null;
-        //todo
+    public Collection<Employee> showAllEmployeesInDepartment(@RequestParam("department") int department) {
+        return employeeService.showAllEmployeeDep(department);
+
     }
+
     @GetMapping(path = "/departments")
     public Collection<Employee> showAllDep() {
-        return employeeService.showAll();
-        //todo
+        return employeeService.showAllEmployeeAllDep();
+
     }
-
-
 
 }
