@@ -67,21 +67,26 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .filter(d -> d.getDepartment() == department)
                 .min(Comparator.comparingInt(Employee::getSalary));
     }
+
     @Override
     public Optional<Employee> findMaxSalaryEmpDep(int department) {
         return employees.values().stream()
                 .filter(d -> d.getDepartment() == department)
                 .max(Comparator.comparingInt(Employee::getSalary));
     }
+
     @Override
     public Collection<Employee> showAllEmployeeDep(int department) {
         return employees.values().stream()
                 .filter(d -> d.getDepartment() == department).toList();
     }
+
     @Override
-    public Collection<Employee> showAllEmployeeAllDep() {
-        return employees.values().stream().toList();
-        //Возвращать всех сотрудников с разделением по отделам - не понятно, как должно быть реализовано - отсортировано по отделам или выводить список отделов с сотрудниками?
+    public Map<Integer, List<Employee>> showAllEmployeeAllDep() {
+        Integer department = 1;
+        List<Employee> employeesList = (List<Employee>) employees.values();
+         Map<Integer, List<Employee>> employeesAllDep = new HashMap<>(Map.of(department, employeesList));
+        return employeesAllDep;
     }
 }
 
