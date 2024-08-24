@@ -7,6 +7,7 @@ import pro.sky.skyprospringdemo.exceptions.EmployeeNotFoundException;
 import pro.sky.skyprospringdemo.exceptions.EmployeeStorageIsFullException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -63,16 +64,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Optional<Employee> findMinSalaryEmpDep(int department) {
-        return employees.values().stream()
+        return Optional.ofNullable(employees.values().stream()
                 .filter(d -> d.getDepartment() == department)
-                .min(Comparator.comparingInt(Employee::getSalary));
+                .min(Comparator.comparingInt(Employee::getSalary))
+                .orElseThrow(() -> new RuntimeException("There are no employee is such department")));
     }
 
     @Override
     public Optional<Employee> findMaxSalaryEmpDep(int department) {
-        return employees.values().stream()
+        return Optional.ofNullable(employees.values().stream()
                 .filter(d -> d.getDepartment() == department)
-                .max(Comparator.comparingInt(Employee::getSalary));
+                .max(Comparator.comparingInt(Employee::getSalary))
+                .orElseThrow(() -> new RuntimeException("There are no employee is such department")));
     }
 
     @Override
@@ -83,10 +86,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Map<Integer, List<Employee>> showAllEmployeeAllDep() {
-        Integer department = 1;
-        List<Employee> employeesList = (List<Employee>) employees.values();
-         Map<Integer, List<Employee>> employeesAllDep = new HashMap<>(Map.of(department, employeesList));
-        return employeesAllDep;
+        return employees.values().stream()
+                .collect(Collectors.groupingBy(Employee::getDepartment));
+
     }
 }
 
