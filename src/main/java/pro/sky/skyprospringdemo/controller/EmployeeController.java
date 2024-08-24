@@ -8,6 +8,9 @@ import pro.sky.skyprospringdemo.domain.Employee;
 import pro.sky.skyprospringdemo.service.EmployeeService;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/employee")
@@ -44,8 +47,8 @@ public class EmployeeController {
     }
 
     @GetMapping(path = "/find")
-    public String findEmployee(@RequestParam("firstName") String firstName,
-                               @RequestParam("lastName") String lastName) {
+    public Employee findEmployee(@RequestParam("firstName") String firstName,
+                                 @RequestParam("lastName") String lastName) {
 
         return employeeService.findEmployee(firstName, lastName);
     }
@@ -54,4 +57,28 @@ public class EmployeeController {
     public Collection<Employee> showAll() {
         return employeeService.showAll();
     }
+
+    @GetMapping(path = "/departments/max-salary")
+    public Optional<Employee> findEmployeeMaxSalaryDepartment(@RequestParam("department") int department) {
+        return employeeService.findMaxSalaryEmpDep(department);
+    }
+
+    @GetMapping(path = "/departments/min-salary")
+    public Optional<Employee> findEmployeeMinSalaryDepartment(@RequestParam("department") int department) {
+        return employeeService.findMinSalaryEmpDep(department);
+
+    }
+
+    @GetMapping(path = "/departments/all")
+    public Collection<Employee> showAllEmployeesInDepartment(@RequestParam("department") int department) {
+        return employeeService.showAllEmployeeDep(department);
+
+    }
+
+    @GetMapping(path = "/departments")
+    public Map<Integer, List<Employee>> showAllDep() {
+        return employeeService.showAllEmployeeAllDep();
+
+    }
+
 }

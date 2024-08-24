@@ -6,67 +6,87 @@ import pro.sky.skyprospringdemo.exceptions.EmployeeAlreadyAddedException;
 import pro.sky.skyprospringdemo.exceptions.EmployeeNotFoundException;
 import pro.sky.skyprospringdemo.exceptions.EmployeeStorageIsFullException;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
+
     public final int maxEmployeeNumber = 10;
-    List<Employee> employees = new ArrayList<>(List.of(
-            new Employee("Ivan", "Ivanov", 1, 110_000),
-            new Employee("Alexander", "Petrov", 1, 100_000),
-            new Employee("Mikhail", "Sidorov", 3, 200_000),
-            new Employee("Stepan", "Prokhorov", 4, 250_000),
-            new Employee("Lidia", "Stephanova", 5, 92_000),
-            new Employee("Victoria", "Gavrilova", 5, 90_000),
-            new Employee("Yulia", "Karelina", 3, 220_000),
-            new Employee("Mikhail", "Vasiliev", 3, 350_000),
-            new Employee("Oleg", "Mokrousov", 3, 250_000),
-            new Employee("Oleg", "Smagin", 3, 150_000)
+
+    private final Map<String, Employee> employees = new HashMap<>(Map.of(
+
+            "IvanIvanov", new Employee("Ivan", "Ivanov", 1, 200_000),
+            "AlexanderPetrov", new Employee("Alexander", "Petrov", 1, 100_000),
+            "MikhailSidorov", new Employee("Mikhail", "Sidorov", 3, 200_000),
+            "StepanProkhorov", new Employee("Stepan", "Prokhorov", 4, 250_000),
+            "LidiaStephanova", new Employee("Lidia", "Stephanova", 5, 92_000),
+            "VictoriaGavrilova", new Employee("Victoria", "Gavrilova", 5, 90_000),
+            "YuliaKarelina", new Employee("Yulia", "Karelina", 3, 220_000),
+            "MikhailVasiliev", new Employee("Mikhail", "Vasiliev", 3, 350_000),
+            "OlegMokrousov", new Employee("Oleg", "Mokrousov", 3, 250_000),
+            "OlegSmagin", new Employee("Oleg", "Smagin", 3, 150_000)
     ));
 
     @Override
     public void addEmployee(Employee employee) {
         if (employees.size() > maxEmployeeNumber) {
             throw new EmployeeStorageIsFullException();
-        } else if (employees.contains(employee)) {
-            throw new EmployeeAlreadyAddedException(employee.getFirstNameName(), employee.getLastNameName());
+        } else if (employees.containsKey(employee.getFullName())) {
+            throw new EmployeeAlreadyAddedException(employee.getFirstName(), employee.getLastName());
         } else {
-            employees.add(employee);
+            employees.put(employee.getFullName(), employee);
         }
 
 
     }
 
     @Override
-    public String findEmployee(String firstName, String lastName) {
-        for (Employee employee : employees) {
-            if (employee.getFirstNameName().equals(firstName) & employee.getLastNameName().equals(lastName)) {
-                final String employeeDescription =
-                        "Employee firstname - " + employee.getFirstNameName() + ", " +
-                                "Employee lastname - " + employee.getLastNameName() + ", " +
-                                "department - " + employee.getDepartment() + ", " +
-                                "salary - " + employee.getSalary();
-                return employeeDescription;
-
-            }
+    public Employee findEmployee(String firstName, String lastName) {
+        Employee employee = new Employee(firstName, lastName, 1, 1);
+        if (employees.containsKey(employee.getFullName())) {
+            return employees.get(employee.getFullName());
         }
         throw new EmployeeNotFoundException(firstName, lastName);
-
     }
 
     @Override
     public void deleteEmployee(String firstName, String lastName) {
         Employee employee = new Employee(firstName, lastName, 1, 1);
-        if (!employees.contains(employee)) throw new EmployeeNotFoundException(firstName, lastName);
-        employees.remove(employee);
+        if (!employees.containsKey(employee.getFullName())) throw new EmployeeNotFoundException(firstName, lastName);
+        employees.remove(employee.getFullName());
     }
 
     @Override
     public Collection<Employee> showAll() {
-        return Collections.unmodifiableList(employees);
+        return Collections.unmodifiableCollection(employees.values());
     }
 
+    @Override
+    public Optional<Employee> findMinSalaryEmpDep(int department) {
+        return employees.values().stream()
+                .filter(d -> d.getDepartment() == department)
+                .min(Comparator.comparingInt(Employee::getSalary));
+    }
+
+    @Override
+    public Optional<Employee> findMaxSalaryEmpDep(int department) {
+        return employees.values().stream()
+                .filter(d -> d.getDepartment() == department)
+                .max(Comparator.comparingInt(Employee::getSalary));
+    }
+
+    @Override
+    public Collection<Employee> showAllEmployeeDep(int department) {
+        return employees.values().stream()
+                .filter(d -> d.getDepartment() == department).toList();
+    }
+
+    @Override
+    public Map<Integer, List<Employee>> showAllEmployeeAllDep() {
+        Integer department = 1;
+        List<Employee> employeesList = (List<Employee>) employees.values();
+         Map<Integer, List<Employee>> employeesAllDep = new HashMap<>(Map.of(department, employeesList));
+        return employeesAllDep;
+    }
 }
+
