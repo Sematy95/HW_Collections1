@@ -9,7 +9,9 @@ import java.util.Optional;
 
 
 public interface EmployeeService {
-    void addEmployee(Employee employee);
+
+
+    Employee addEmployee(String firstName, String lastName, int salary, int departmentId);
 
     Employee findEmployee(String firstName, String lastName);
 

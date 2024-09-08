@@ -28,13 +28,8 @@ public class EmployeeController {
                               @RequestParam("lastName") String lastName,
                               @RequestParam("department") Integer department,
                               @RequestParam("salary") Integer salary) {
-        Employee employee = new Employee(
-                firstName,
-                lastName,
-                department,
-                salary
-        );
-        employeeService.addEmployee(employee);
+
+        employeeService.addEmployee(firstName, lastName, department, salary);
         return "Employee added";
     }
 
