@@ -5,8 +5,12 @@ import pro.sky.skyprospringdemo.domain.Employee;
 import pro.sky.skyprospringdemo.exceptions.EmployeeAlreadyAddedException;
 import pro.sky.skyprospringdemo.exceptions.EmployeeNotFoundException;
 import pro.sky.skyprospringdemo.exceptions.EmployeeStorageIsFullException;
+import pro.sky.skyprospringdemo.exceptions.InvalidInputException;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.StringUtils.*;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -28,13 +32,21 @@ public class EmployeeServiceImpl implements EmployeeService {
     ));
 
     @Override
-    public void addEmployee(Employee employee) {
+    public Employee addEmployee(String firstName, String lastName, int salary, int departmentId) {
+        Employee employee = new Employee(
+                firstName,
+                lastName,
+                departmentId,
+                salary
+        );
+        validateInput(firstName, lastName);
         if (employees.size() > maxEmployeeNumber) {
             throw new EmployeeStorageIsFullException();
         } else if (employees.containsKey(employee.getFullName())) {
             throw new EmployeeAlreadyAddedException(employee.getFirstName(), employee.getLastName());
         } else {
             employees.put(employee.getFullName(), employee);
+            return employee;
         }
 
 
@@ -42,6 +54,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee findEmployee(String firstName, String lastName) {
+        validateInput(firstName, lastName);
         Employee employee = new Employee(firstName, lastName, 1, 1);
         if (employees.containsKey(employee.getFullName())) {
             return employees.get(employee.getFullName());
@@ -51,6 +64,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void deleteEmployee(String firstName, String lastName) {
+        validateInput(firstName, lastName);
         Employee employee = new Employee(firstName, lastName, 1, 1);
         if (!employees.containsKey(employee.getFullName())) throw new EmployeeNotFoundException(firstName, lastName);
         employees.remove(employee.getFullName());
@@ -63,16 +77,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Optional<Employee> findMinSalaryEmpDep(int department) {
-        return employees.values().stream()
+        return Optional.ofNullable(employees.values().stream()
                 .filter(d -> d.getDepartment() == department)
-                .min(Comparator.comparingInt(Employee::getSalary));
+                .min(Comparator.comparingInt(Employee::getSalary))
+                .orElseThrow(() -> new RuntimeException("There are no employee is such department")));
     }
 
     @Override
     public Optional<Employee> findMaxSalaryEmpDep(int department) {
-        return employees.values().stream()
+        return Optional.ofNullable(employees.values().stream()
                 .filter(d -> d.getDepartment() == department)
-                .max(Comparator.comparingInt(Employee::getSalary));
+                .max(Comparator.comparingInt(Employee::getSalary))
+                .orElseThrow(() -> new RuntimeException("There are no employee is such department")));
     }
 
     @Override
@@ -83,10 +99,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Map<Integer, List<Employee>> showAllEmployeeAllDep() {
-        Integer department = 1;
-        List<Employee> employeesList = (List<Employee>) employees.values();
-         Map<Integer, List<Employee>> employeesAllDep = new HashMap<>(Map.of(department, employeesList));
-        return employeesAllDep;
+        return employees.values().stream()
+                .collect(Collectors.groupingBy(Employee::getDepartment));
+
+    }
+
+    private void validateInput(String firstName, String lastName) {
+        if (!(isAlpha(firstName) && isAlpha(lastName))) {
+            throw new InvalidInputException();
+        }
     }
 }
 

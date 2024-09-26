@@ -40,7 +40,24 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.17.0</version>
+			</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>32.0.0-android</version>
+		</dependency>
+
 	</dependencies>
+
+
+
 
 	<build>
 		<plugins>
@@ -51,4 +68,6 @@
 		</plugins>
 	</build>
 
+
 </project>
+
