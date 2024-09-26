@@ -3,8 +3,6 @@ package pro.sky.skyprospringdemo.controller;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.skyprospringdemo.domain.Employee;
 import pro.sky.skyprospringdemo.service.DepartmentService;
-import pro.sky.skyprospringdemo.service.EmployeeService;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -33,15 +31,15 @@ public class DepartmentController {
     }
     @GetMapping("/{id}/salary/max")
     public Optional<Employee> showMaxSalaryInDepartment(@PathVariable int id) {
-        return null;
+        return departmentService.findMaxSalaryEmpDep(id);
     }
     @GetMapping("/{id}/salary/min")
     public Optional<Employee> showMinSalaryInDepartment(@PathVariable int id) {
-        return null;
+        return departmentService.findMinSalaryEmpDep(id);
     }
     @GetMapping("/employees")
     public Map<Integer, List<Employee>> showAllDep() {
-        return null;
+        return departmentService.showAllEmployeeAllDep();
 
     }
 }

@@ -66,34 +66,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return Collections.unmodifiableCollection(employeeRepository.employees.values());
     }
 
-    @Override
-    public Optional<Employee> findMinSalaryEmpDep(int department) {
-        return Optional.ofNullable(employeeRepository.employees.values().stream()
-                .filter(d -> d.getDepartment() == department)
-                .min(Comparator.comparingInt(Employee::getSalary))
-                .orElseThrow(() -> new RuntimeException("There are no employee is such department")));
-    }
 
-    @Override
-    public Optional<Employee> findMaxSalaryEmpDep(int department) {
-        return Optional.ofNullable(employeeRepository.employees.values().stream()
-                .filter(d -> d.getDepartment() == department)
-                .max(Comparator.comparingInt(Employee::getSalary))
-                .orElseThrow(() -> new RuntimeException("There are no employee is such department")));
-    }
-
-    @Override
-    public Collection<Employee> showAllEmployeeDep(int department) {
-        return employeeRepository.employees.values().stream()
-                .filter(d -> d.getDepartment() == department).toList();
-    }
-
-    @Override
-    public Map<Integer, List<Employee>> showAllEmployeeAllDep() {
-        return employeeRepository.employees.values().stream()
-                .collect(Collectors.groupingBy(Employee::getDepartment));
-
-    }
 
     private void validateInput(String firstName, String lastName) {
         if (!(isAlpha(firstName) && isAlpha(lastName))) {
