@@ -6,6 +6,7 @@ import pro.sky.skyprospringdemo.exceptions.EmployeeAlreadyAddedException;
 import pro.sky.skyprospringdemo.exceptions.EmployeeNotFoundException;
 import pro.sky.skyprospringdemo.exceptions.EmployeeStorageIsFullException;
 import pro.sky.skyprospringdemo.exceptions.InvalidInputException;
+import pro.sky.skyprospringdemo.repository.EmployeeRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,21 +16,11 @@ import static org.apache.commons.lang3.StringUtils.*;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-    public final int maxEmployeeNumber = 10;
+    private final EmployeeRepository employeeRepository;
 
-    private final Map<String, Employee> employees = new HashMap<>(Map.of(
-
-            "IvanIvanov", new Employee("Ivan", "Ivanov", 1, 200_000),
-            "AlexanderPetrov", new Employee("Alexander", "Petrov", 1, 100_000),
-            "MikhailSidorov", new Employee("Mikhail", "Sidorov", 3, 200_000),
-            "StepanProkhorov", new Employee("Stepan", "Prokhorov", 4, 250_000),
-            "LidiaStephanova", new Employee("Lidia", "Stephanova", 5, 92_000),
-            "VictoriaGavrilova", new Employee("Victoria", "Gavrilova", 5, 90_000),
-            "YuliaKarelina", new Employee("Yulia", "Karelina", 3, 220_000),
-            "MikhailVasiliev", new Employee("Mikhail", "Vasiliev", 3, 350_000),
-            "OlegMokrousov", new Employee("Oleg", "Mokrousov", 3, 250_000),
-            "OlegSmagin", new Employee("Oleg", "Smagin", 3, 150_000)
-    ));
+    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
 
     @Override
     public Employee addEmployee(String firstName, String lastName, int salary, int departmentId) {
@@ -40,12 +31,12 @@ public class EmployeeServiceImpl implements EmployeeService {
                 salary
         );
         validateInput(firstName, lastName);
-        if (employees.size() > maxEmployeeNumber) {
+        if (employeeRepository.getEmployees().size() > employeeRepository.maxEmployeeNumber) {
             throw new EmployeeStorageIsFullException();
-        } else if (employees.containsKey(employee.getFullName())) {
+        } else if (employeeRepository.getEmployees().containsKey(employee.getFullName())) {
             throw new EmployeeAlreadyAddedException(employee.getFirstName(), employee.getLastName());
         } else {
-            employees.put(employee.getFullName(), employee);
+            employeeRepository.employees.put(employee.getFullName(), employee);
             return employee;
         }
 
@@ -56,8 +47,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee findEmployee(String firstName, String lastName) {
         validateInput(firstName, lastName);
         Employee employee = new Employee(firstName, lastName, 1, 1);
-        if (employees.containsKey(employee.getFullName())) {
-            return employees.get(employee.getFullName());
+        if (employeeRepository.employees.containsKey(employee.getFullName())) {
+            return employeeRepository.employees.get(employee.getFullName());
         }
         throw new EmployeeNotFoundException(firstName, lastName);
     }
@@ -66,18 +57,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployee(String firstName, String lastName) {
         validateInput(firstName, lastName);
         Employee employee = new Employee(firstName, lastName, 1, 1);
-        if (!employees.containsKey(employee.getFullName())) throw new EmployeeNotFoundException(firstName, lastName);
-        employees.remove(employee.getFullName());
+        if (!employeeRepository.employees.containsKey(employee.getFullName())) throw new EmployeeNotFoundException(firstName, lastName);
+        employeeRepository.employees.remove(employee.getFullName());
     }
 
     @Override
     public Collection<Employee> showAll() {
-        return Collections.unmodifiableCollection(employees.values());
+        return Collections.unmodifiableCollection(employeeRepository.employees.values());
     }
 
     @Override
     public Optional<Employee> findMinSalaryEmpDep(int department) {
-        return Optional.ofNullable(employees.values().stream()
+        return Optional.ofNullable(employeeRepository.employees.values().stream()
                 .filter(d -> d.getDepartment() == department)
                 .min(Comparator.comparingInt(Employee::getSalary))
                 .orElseThrow(() -> new RuntimeException("There are no employee is such department")));
@@ -85,7 +76,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Optional<Employee> findMaxSalaryEmpDep(int department) {
-        return Optional.ofNullable(employees.values().stream()
+        return Optional.ofNullable(employeeRepository.employees.values().stream()
                 .filter(d -> d.getDepartment() == department)
                 .max(Comparator.comparingInt(Employee::getSalary))
                 .orElseThrow(() -> new RuntimeException("There are no employee is such department")));
@@ -93,13 +84,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Collection<Employee> showAllEmployeeDep(int department) {
-        return employees.values().stream()
+        return employeeRepository.employees.values().stream()
                 .filter(d -> d.getDepartment() == department).toList();
     }
 
     @Override
     public Map<Integer, List<Employee>> showAllEmployeeAllDep() {
-        return employees.values().stream()
+        return employeeRepository.employees.values().stream()
                 .collect(Collectors.groupingBy(Employee::getDepartment));
 
     }

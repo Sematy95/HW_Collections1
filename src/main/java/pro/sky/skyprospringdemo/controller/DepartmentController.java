@@ -14,16 +14,17 @@ import java.util.Optional;
 @RequestMapping("/department")
 public class DepartmentController {
 
-    private final EmployeeService employeeService;
+    private final DepartmentService departmentService;
 
 
-    public DepartmentController(EmployeeService employeeService) {
-        this.employeeService = employeeService;
+    public DepartmentController(DepartmentService departmentService) {
+        this.departmentService = departmentService;
     }
+
 
     @GetMapping("/{id}/employees")
     public Collection<Employee> showAllEmployeeDep(@PathVariable int id) {
-        return employeeService.showAllEmployeeDep(id);
+        return departmentService.showAllEmployeeDep(id);
     }
 
     @GetMapping("/{id}/salary/sum")
@@ -32,15 +33,15 @@ public class DepartmentController {
     }
     @GetMapping("/{id}/salary/max")
     public Optional<Employee> showMaxSalaryInDepartment(@PathVariable int id) {
-        return employeeService.findMaxSalaryEmpDep(id);
+        return null;
     }
     @GetMapping("/{id}/salary/min")
     public Optional<Employee> showMinSalaryInDepartment(@PathVariable int id) {
-        return employeeService.findMinSalaryEmpDep(id);
+        return null;
     }
     @GetMapping("/employees")
     public Map<Integer, List<Employee>> showAllDep() {
-        return employeeService.showAllEmployeeAllDep();
+        return null;
 
     }
 }
