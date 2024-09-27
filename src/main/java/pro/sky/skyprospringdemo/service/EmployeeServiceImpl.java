@@ -47,8 +47,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     public Employee findEmployee(String firstName, String lastName) {
         validateInput(firstName, lastName);
         Employee employee = new Employee(firstName, lastName, 1, 1);
-        if (employeeRepository.employees.containsKey(employee.getFullName())) {
-            return employeeRepository.employees.get(employee.getFullName());
+        if (employeeRepository.getEmployees().containsKey(employee.getFullName())) {
+            return employeeRepository.getEmployees().get(employee.getFullName());
         }
         throw new EmployeeNotFoundException(firstName, lastName);
     }
@@ -57,13 +57,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void deleteEmployee(String firstName, String lastName) {
         validateInput(firstName, lastName);
         Employee employee = new Employee(firstName, lastName, 1, 1);
-        if (!employeeRepository.employees.containsKey(employee.getFullName())) throw new EmployeeNotFoundException(firstName, lastName);
+        if (!employeeRepository.getEmployees().containsKey(employee.getFullName())) throw new EmployeeNotFoundException(firstName, lastName);
         employeeRepository.employees.remove(employee.getFullName());
     }
 
     @Override
     public Collection<Employee> showAll() {
-        return Collections.unmodifiableCollection(employeeRepository.employees.values());
+        return Collections.unmodifiableCollection(employeeRepository.getEmployees().values());
     }
 
 
