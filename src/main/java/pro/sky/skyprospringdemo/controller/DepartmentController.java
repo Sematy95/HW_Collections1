@@ -19,15 +19,14 @@ public class DepartmentController {
         this.departmentService = departmentService;
     }
 
-
     @GetMapping("/{id}/employees")
     public Collection<Employee> showAllEmployeeDep(@PathVariable int id) {
         return departmentService.showAllEmployeeDep(id);
     }
 
     @GetMapping("/{id}/salary/sum")
-    public String showSalarySumInDepartment(@PathVariable int id) {
-        return "Сумма";
+    public int showSalarySumInDepartment(@PathVariable int id) {
+        return departmentService.showSalarySumInDepartment(id);
     }
     @GetMapping("/{id}/salary/max")
     public Optional<Employee> showMaxSalaryInDepartment(@PathVariable int id) {

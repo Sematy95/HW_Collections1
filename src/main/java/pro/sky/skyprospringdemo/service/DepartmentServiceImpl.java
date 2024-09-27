@@ -1,11 +1,13 @@
 package pro.sky.skyprospringdemo.service;
 
+import org.springframework.stereotype.Service;
 import pro.sky.skyprospringdemo.domain.Employee;
 import pro.sky.skyprospringdemo.repository.EmployeeRepository;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class DepartmentServiceImpl implements DepartmentService {
 
     private final EmployeeRepository employeeRepository;
@@ -20,6 +22,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         return employeeRepository.getEmployees().values().stream()
                 .filter(d -> d.getDepartment() == department).toList();
     }
+
     @Override
     public Optional<Employee> findMinSalaryEmpDep(int department) {
         return Optional.ofNullable(employeeRepository.employees.values().stream()
@@ -42,9 +45,11 @@ public class DepartmentServiceImpl implements DepartmentService {
                 .collect(Collectors.groupingBy(Employee::getDepartment));
 
     }
-@Override
-    public int showSalarySumInDepartment (int department) {
-        return 5;
+
+    @Override
+    public int showSalarySumInDepartment(int department) {
+        return employeeRepository.employees.values().stream()
+                .filter(d -> d.getDepartment() == department).mapToInt(Employee::getSalary).sum();
     }
 }
 
