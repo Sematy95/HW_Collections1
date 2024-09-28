@@ -9,5 +9,13 @@ import java.util.Optional;
 
 public interface DepartmentService {
 
+    Optional<Employee> findMinSalaryEmpDep(int department);
+
+    Optional<Employee> findMaxSalaryEmpDep(int department);
+
     Collection<Employee> showAllEmployeeDep(int department);
+
+    Map<Integer, List<Employee>> showAllEmployeeAllDep();
+
+    int showSalarySumInDepartment(int department);
 }

@@ -3,8 +3,6 @@ package pro.sky.skyprospringdemo.controller;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.skyprospringdemo.domain.Employee;
 import pro.sky.skyprospringdemo.service.DepartmentService;
-import pro.sky.skyprospringdemo.service.EmployeeService;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -14,33 +12,33 @@ import java.util.Optional;
 @RequestMapping("/department")
 public class DepartmentController {
 
-    private final EmployeeService employeeService;
+    private final DepartmentService departmentService;
 
 
-    public DepartmentController(EmployeeService employeeService) {
-        this.employeeService = employeeService;
+    public DepartmentController(DepartmentService departmentService) {
+        this.departmentService = departmentService;
     }
 
     @GetMapping("/{id}/employees")
     public Collection<Employee> showAllEmployeeDep(@PathVariable int id) {
-        return employeeService.showAllEmployeeDep(id);
+        return departmentService.showAllEmployeeDep(id);
     }
 
     @GetMapping("/{id}/salary/sum")
-    public String showSalarySumInDepartment(@PathVariable int id) {
-        return "Сумма";
+    public int showSalarySumInDepartment(@PathVariable int id) {
+        return departmentService.showSalarySumInDepartment(id);
     }
     @GetMapping("/{id}/salary/max")
     public Optional<Employee> showMaxSalaryInDepartment(@PathVariable int id) {
-        return employeeService.findMaxSalaryEmpDep(id);
+        return departmentService.findMaxSalaryEmpDep(id);
     }
     @GetMapping("/{id}/salary/min")
     public Optional<Employee> showMinSalaryInDepartment(@PathVariable int id) {
-        return employeeService.findMinSalaryEmpDep(id);
+        return departmentService.findMinSalaryEmpDep(id);
     }
     @GetMapping("/employees")
     public Map<Integer, List<Employee>> showAllDep() {
-        return employeeService.showAllEmployeeAllDep();
+        return departmentService.showAllEmployeeAllDep();
 
     }
 }

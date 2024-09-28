@@ -19,11 +19,5 @@ public interface EmployeeService {
 
     Collection<Employee> showAll();
 
-    Optional<Employee> findMinSalaryEmpDep(int department);
 
-    Optional<Employee> findMaxSalaryEmpDep(int department);
-
-    Collection<Employee> showAllEmployeeDep(int department);
-
-    Map<Integer, List<Employee>> showAllEmployeeAllDep();
 }
