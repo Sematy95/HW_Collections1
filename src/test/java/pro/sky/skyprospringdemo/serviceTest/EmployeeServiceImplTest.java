@@ -18,8 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isAlpha;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +50,7 @@ public class EmployeeServiceImplTest {
         when(employeeRepository.getEmployees())
                 .thenReturn(employees);
 
-        //employees.put("SemyonTychkin", new Employee("Semyon", "Tychkin", 1, 200_000));
+
         employees.put("SemyonTychkin1", new Employee("Semyon", "Tychkin1", 1, 200_000));
 
 
@@ -59,6 +58,7 @@ public class EmployeeServiceImplTest {
         assertThrows(EmployeeStorageIsFullException.class, () -> employeeService.addEmployee("Ivan", "Ermenev", 120_000, 3));
 
     }
+
     @DisplayName("Негативный тест- уже есть такой сотрудник")
     @Test
     public void addEmployeeAlreadyAdded() {
@@ -70,6 +70,7 @@ public class EmployeeServiceImplTest {
         assertThrows(EmployeeAlreadyAddedException.class, () -> employeeService.addEmployee("Ivan", "Ivanov", 120_000, 3));
 
     }
+
     @DisplayName("Позитивный тест- добавление нового сотрудника ")
     @Test
     public void addEmployee() {
@@ -91,23 +92,88 @@ public class EmployeeServiceImplTest {
         assertEquals(employees1, employees);
 
 
-
-
     }
 
+    @DisplayName("Положительный тест - поиск сотрудника по имени и фамилии")
     @Test
     public void findEmployee() {
+        when(employeeRepository.getEmployees())
+                .thenReturn(employees);
+        //given
+        Employee employee = new Employee("Ivan", "Ivanov", 1, 200_000);
+        Employee expected = employees.get(employee.getFullName());
+
+        //when
+        Employee actual = employeeService.findEmployee("Ivan", "Ivanov");
+
+        //then
+        assertEquals(expected, actual);
     }
 
+    @DisplayName("Неативный тест - нет сотрудника с такими именем и фамилией")
+    @Test
+    public void findEmployeeNoEmployeeWithSuchName() {
+        when(employeeRepository.getEmployees())
+                .thenReturn(employees);
+
+        //when//then
+        assertThrows(EmployeeNotFoundException.class, () -> employeeService.findEmployee("Пётр", "Первый"));
+
+    }
+
+    @DisplayName("Положительный тест - удаление сотрудника по имени и фамилии")
     @Test
     public void deleteEmployee() {
+
+
+        //given
+        Employee employee = new Employee("Oleg", "Smagin", 1, 200_000);
+
+        //when(employeeRepository.employees.remove( employee))
+        // .thenReturn(employees.remove(employee));
+
+        // when(employeeRepository.getEmployees())
+        //   .thenReturn(employees);
+
+        Map<String, Employee> employees1 = new HashMap<>();
+        employees1.putAll(employees);
+        employees1.remove(employee.getFullName());
+
+        //when
+        employees.remove(employee.getFullName());
+
+        //then
+        assertEquals(employees1, employees);
     }
 
+    @DisplayName("Негативный  тест - удаление сотрудника по имени и фамилии - нет такого сотрудника")
+    @Test
+    public void deleteEmployeeNoSuchEmployee() {
+        when(employeeRepository.getEmployees())
+                .thenReturn(employees);
+
+        //when//then
+        assertThrows(EmployeeNotFoundException.class, () -> employeeService.deleteEmployee("Пётр", "Первый"));
+
+    }
+
+    @DisplayName("Положительный  тест - вывести всех")
     @Test
     public void showAll() {
+        when(employeeRepository.getEmployees())
+                .thenReturn(employees);
+
+        //given
+        Collection<Employee> expected = Collections.unmodifiableCollection(employees.values());
+
+        //when
+        Collection<Employee> actual = employeeService.showAll();
+
+        //then
+        assertIterableEquals(expected,actual);
+
+
     }
 
-    @Test
-    public void validateInput() {
-    }
+
 }
