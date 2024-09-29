@@ -2,6 +2,7 @@ package pro.sky.skyprospringdemo.service;
 
 import org.springframework.stereotype.Service;
 import pro.sky.skyprospringdemo.domain.Employee;
+import pro.sky.skyprospringdemo.exceptions.NoEmployeesInDepartmentException;
 import pro.sky.skyprospringdemo.repository.EmployeeRepository;
 
 import java.util.*;
@@ -26,17 +27,19 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public Optional<Employee> findMinSalaryEmpDep(int department) {
         return Optional.ofNullable(employeeRepository.getEmployees().values().stream()
+                .filter(Objects::nonNull)
                 .filter(d -> d.getDepartment() == department)
                 .min(Comparator.comparingInt(Employee::getSalary))
-                .orElseThrow(() -> new RuntimeException("There are no employee is such department")));
+                .orElseThrow(NoEmployeesInDepartmentException::new));
     }
 
     @Override
     public Optional<Employee> findMaxSalaryEmpDep(int department) {
         return Optional.ofNullable(employeeRepository.getEmployees().values().stream()
+                .filter(Objects::nonNull)
                 .filter(d -> d.getDepartment() == department)
                 .max(Comparator.comparingInt(Employee::getSalary))
-                .orElseThrow(() -> new RuntimeException("There are no employee is such department")));
+                .orElseThrow(NoEmployeesInDepartmentException::new));
     }
 
     @Override
